@@ -1,0 +1,21 @@
+# プライベートファイル - git管理対象外
+think.txt
+prompt.txt
+
+# ログファイル
+logs/
+*.log
+
+# 一時ファイル
+tmp/
+*.tmp
+/tmp/
+
+# 作業用ファイル
+*.swp
+*.swo
+*~
+
+# OS固有ファイル
+.DS_Store
+Thumbs.db
