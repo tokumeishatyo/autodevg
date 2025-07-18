@@ -11,6 +11,7 @@
 - **2x2シンプル構成**: 効率的な4ペインレイアウト
 - **CEO+Manager統合**: 戦略的判断と実行管理の一元化
 - **Gemini MCP活用**: 要件定義・レビュー・テストでGemini使用
+- **🚨 Gemini役割制限システム**: 初期文書作成後はレビュー専任に徹する技術的保証
 - **段階的な品質管理**: 各フェーズで厳格な承認プロセス
 - **GitHub連携**: ブランチ戦略とプルリクエストワークフロー
 - **/goコマンド**: 手動開始で制御された開発プロセス
@@ -272,12 +273,19 @@ tmux attach-session -t autodevg_workspace
     ├── instructions_manager.md （Manager用指示書）
     ├── instructions_developer.md （Developer用指示書）
     ├── instructions_review.md （Reviewer用指示書）
+    ├── GEMINI_ROLE_RESTRICTION.md （Gemini役割制限システム詳細）
     ├── GITHUB_WORKFLOW.md （GitHub連携ワークフロー詳細）
     ├── LOGGING.md （ログ機能詳細）
     └── TIME_TRACKING.md （時間記録システム詳細）
 ```
 
 ## 重要な新機能
+
+### 🚨 Gemini役割制限システム
+- **Phase単位の権限制御**: 開発段階に応じた厳格な役割制限
+- **自動プロンプト生成**: 制限に応じた適切なプロンプトを自動作成
+- **事前チェック機能**: 作業実行前の必須確認システム
+- **レビュー専任保証**: Phase 2以降はレビューのみに徹する技術的保証
 
 ### GitHub連携
 - **完全独立型プロジェクト**: テンプレートから独立した新しいプロジェクト作成

@@ -4,8 +4,8 @@
 
 ROLE="$1"
 WORK_TYPE="$2"
-USAGE_LOG="/tmp/autodev_status/claude_usage.log"
-SHARED_DIR="/tmp/autodev_status"
+USAGE_LOG="/tmp/autodevg_status/claude_usage.log"
+SHARED_DIR="/tmp/autodevg_status"
 
 if [ -z "$ROLE" ]; then
     echo "使用方法: ./scripts/check_usage_before_work.sh [ROLE] [WORK_TYPE]"
@@ -86,7 +86,7 @@ update_usage_monitor() {
     local work="$4"
     
     # 使用量モニターファイルを直接更新
-    cat > /tmp/autodev_status/usage_check_result.txt << EOF
+    cat > /tmp/autodevg_status/usage_check_result.txt << EOF
 === Claude使用量チェック結果 ===
 📅 チェック時刻: $JST_TIME
 🎯 実行役割: $role

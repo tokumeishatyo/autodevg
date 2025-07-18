@@ -21,6 +21,15 @@
 ```
 /go コマンドを受領しました。開発プロセスを開始します。
 
+【使用量チェック】
+作業開始前に必須チェックを実行します：
+```bash
+if ! ./scripts/check_usage_before_work.sh Manager "要件定義作成"; then
+    echo "🚫 使用量制限のため作業を中断します。復帰可能まで待機が必要です。"
+    exit 1
+fi
+```
+
 【進捗状況の更新】
 ./scripts/go_command_handler.sh を実行して進捗状況を更新します。
 
@@ -39,10 +48,32 @@ Gemini MCPを使用して要件定義書と外部仕様書の作成を開始し�
 ```
 /goコマンドが入力されたら、以下の手順で開発を開始します：
 
-1. ./scripts/go_command_handler.sh を実行（進捗状況の更新）
-2. planning.txtの内容を読み込み
-3. Gemini MCPを使用して要件定義書と外部仕様書の作成を開始
-4. 段階的に議論を重ねて合意を形成
+1. 作業前使用量チェックの実行
+2. ./scripts/go_command_handler.sh を実行（進捗状況の更新）
+3. planning.txtの内容を読み込み
+4. Gemini MCPを使用して要件定義書と外部仕様書の作成を開始
+5. 段階的に議論を重ねて合意を形成
+
+【作業前必須チェック】
+```bash
+if ! ./scripts/check_usage_before_work.sh Manager "要件定義作成"; then
+    echo "🚫 使用量制限のため作業を中断します。復帰可能まで待機が必要です。"
+    exit 1
+fi
+```
+
+【Gemini役割制限チェック】
+```bash
+# Phase 1での要件定義書作成の許可チェック
+./scripts/validate_gemini_role.sh requirements create_requirements
+
+if [ $? -eq 0 ]; then
+    echo "✅ Geminiによる要件定義書作成が許可されました"
+else
+    echo "🚫 制限により要件定義書作成を変更する必要があります"
+    exit 1
+fi
+```
 
 【Gemini MCP呼び出し】
 以下のコマンドを使用してGeminiとの対話を開始：
@@ -50,8 +81,8 @@ Gemini MCPを使用して要件定義書と外部仕様書の作成を開始し�
 
 **Gemini MCPコマンド例：**
 ```bash
-# Geminiとの対話開始
-mcp__gemini-cli__geminiChat --prompt "planning.txtの内容に基づいて要件定義書を作成してください。以下のplanning.txtの内容を参考に：[planning.txtの内容を転記]"
+# Geminiとの対話開始（役割制限チェック済み）
+mcp__gemini-cli__geminiChat --prompt "【要件定義書作成依頼】planning.txtの内容に基づいて要件定義書を作成してください。以下のplanning.txtの内容を参考に：[planning.txtの内容を転記]"
 ```
 
 #### 手順2: Geminiとの段階的議論
@@ -71,6 +102,15 @@ mcp__gemini-cli__geminiChat --prompt "planning.txtの内容に基づいて要件
 Developerペイン: 要件定義書・外部仕様書が確定しました。
 次のフェーズに進みます。
 
+【作業前チェック指示】
+作業開始前に必ず使用量チェックを実行してください：
+```bash
+if ! ./scripts/check_usage_before_work.sh Developer "詳細仕様書作成"; then
+    echo "🚫 使用量制限のため作業を中断します。復帰可能まで待機が必要です。"
+    exit 1
+fi
+```
+
 【作成依頼】
 - 詳細仕様書の作成
 - テスト手順書の作成（単体テスト・総合テスト）
@@ -82,10 +122,19 @@ Developerペイン: 要件定義書・外部仕様書が確定しました。
 ```
 
 #### 手順5: Gemini MCPによるレビュー
-Developerからの提出後、Gemini MCPでレビューを実施：
+Developerからの提出後、役割制限チェックを実行してからGemini MCPでレビューを実施：
 ```bash
-# Geminiによるレビュー
-mcp__gemini-cli__geminiChat --prompt "以下の詳細仕様書とテスト手順書をレビューしてください。問題点や改善点を指摘してください：[文書内容を転記]"
+# 役割制限チェック実行
+./scripts/validate_gemini_role.sh detailed_spec review
+
+# 許可された場合のみレビュー実行
+if [ $? -eq 0 ]; then
+    # Geminiによるレビュー
+    mcp__gemini-cli__geminiChat --prompt "【レビュー依頼のみ】以下の詳細仕様書とテスト手順書をレビューしてください。問題点や改善点を指摘してください。注意：編集や書き直しは行わず、レビューコメントのみ提供してください：[文書内容を転記]"
+else
+    echo "🚫 現在のPhaseでは制限があります"
+    cat /tmp/autodevg_status/gemini_warning.txt
+fi
 ```
 
 #### 手順6: フィードバックと改善
@@ -98,6 +147,15 @@ mcp__gemini-cli__geminiChat --prompt "以下の詳細仕様書とテスト手順
 #### 手順7: コーディング開始指示
 ```
 Developerペイン: 詳細仕様書とテスト手順書が承認されました。
+
+【作業前チェック指示】
+コーディング開始前に必ず使用量チェックを実行してください：
+```bash
+if ! ./scripts/check_usage_before_work.sh Developer "コーディング開始"; then
+    echo "🚫 使用量制限のため作業を中断します。復帰可能まで待機が必要です。"
+    exit 1
+fi
+```
 
 【作業ブランチ作成】
 mainブランチでの作業は禁止です。必ず作業ブランチを作成してください：
@@ -117,18 +175,36 @@ git checkout -b feature/[機能名]
 ```
 
 #### 手順8: Gemini MCPによるコードレビュー
-Developerからのレビュー依頼後：
+Developerからのレビュー依頼後、役割制限チェックを実行してからレビューを実施：
 ```bash
-# Geminiによるコードレビュー
-mcp__gemini-cli__geminiChat --prompt "以下のコードをレビューしてください。バグ、改善点、テストカバレッジについて確認してください：[コード内容を転記]"
+# 役割制限チェック実行
+./scripts/validate_gemini_role.sh implementation review
+
+# 許可された場合のみレビュー実行
+if [ $? -eq 0 ]; then
+    # Geminiによるコードレビュー
+    mcp__gemini-cli__geminiChat --prompt "【レビュー依頼のみ】以下のコードをレビューしてください。バグ、改善点、テストカバレッジについて確認してください。注意：コードの編集や書き直しは行わず、レビューコメントのみ提供してください：[コード内容を転記]"
+else
+    echo "🚫 現在のPhaseでは制限があります"
+    cat /tmp/autodevg_status/gemini_warning.txt
+fi
 ```
 
 ### Phase 4: 総合テスト・完了
 
 #### 手順9: 総合テスト（Gemini MCP使用）
 ```bash
-# Geminiによる総合テスト評価
-mcp__gemini-cli__geminiChat --prompt "以下のアプリケーションの総合テストを評価してください。要件定義書通りの機能実装を確認してください：[アプリケーション概要とテスト結果を転記]"
+# 役割制限チェック実行
+./scripts/validate_gemini_role.sh implementation review
+
+# 許可された場合のみテスト評価実行
+if [ $? -eq 0 ]; then
+    # Geminiによる総合テスト評価
+    mcp__gemini-cli__geminiChat --prompt "【総合テスト評価依頼】以下のアプリケーションの総合テストを評価してください。要件定義書通りの機能実装を確認してください。注意：テストケースの編集は行わず、評価コメントのみ提供してください：[アプリケーション概要とテスト結果を転記]"
+else
+    echo "🚫 現在のPhaseでは制限があります"
+    cat /tmp/autodevg_status/gemini_warning.txt
+fi
 ```
 
 #### 手順10: プルリクエスト・完了
@@ -151,6 +227,104 @@ mcp__gemini-cli__googleSearch --query "検索キーワード"
 1. **段階的議論**: 一度に全てを決めず、複数回に分けて議論
 2. **具体的な質問**: 曖昧な質問ではなく、具体的な観点を提示
 3. **フィードバック統合**: Geminiの回答を基に更なる改善を依頼
+
+## 🚨 Gemini役割制限システム
+
+### Geminiの許可された作業
+✅ **Phase 1のみ**: 
+- 要件定義書の作成（docs/requirements.md）
+- 外部仕様書の作成（docs/external_spec.md）
+
+✅ **全フェーズ**:
+- レビュー・評価・指摘の提供
+- 改善提案の提供
+- 質問への回答
+
+### Geminiの禁止された作業
+❌ **Phase 2以降**: 
+- 詳細仕様書の直接編集
+- テスト手順書の直接編集
+- ソースコードの直接編集
+- 実装ファイルの直接作成
+
+### 役割制限チェック手順
+
+#### 手順1: Phase判定
+Gemini MCPを呼び出す前に、役割制限チェックを実行：
+```bash
+# 役割制限チェック実行
+./scripts/validate_gemini_role.sh requirements create_requirements
+# または
+./scripts/validate_gemini_role.sh detailed_spec review
+
+# チェック結果の確認
+if [ $? -eq 0 ]; then
+    echo "✅ Geminiによる作業実行が許可されました"
+    # 生成されたプロンプトテンプレートを使用
+    cat /tmp/autodevg_status/gemini_prompt_template.txt
+else
+    echo "⚠️ 制限により作業を変更する必要があります"
+    # 警告内容を確認
+    cat /tmp/autodevg_status/gemini_warning.txt
+fi
+```
+
+#### 手順2: 作業種別別のプロンプト
+
+**Phase 1での要件定義書作成**:
+```bash
+# 役割制限チェック実行
+./scripts/validate_gemini_role.sh requirements create_requirements
+
+# 許可された場合のみ実行
+if [ $? -eq 0 ]; then
+    mcp__gemini-cli__geminiChat --prompt "【要件定義書作成依頼】planning.txtの内容に基づいて要件定義書を作成してください。[planning.txtの内容]"
+fi
+```
+
+**Phase 2以降でのレビュー**:
+```bash
+# 役割制限チェック実行
+./scripts/validate_gemini_role.sh detailed_spec review
+
+# 許可された場合のみ実行
+if [ $? -eq 0 ]; then
+    mcp__gemini-cli__geminiChat --prompt "【レビュー依頼のみ】以下の文書をレビューしてください。問題点や改善点を指摘してください。注意：編集や書き直しは行わず、レビューコメントのみ提供してください。[文書内容]"
+fi
+```
+
+#### 手順3: 作業結果の確認
+
+**Phase 1での確認**:
+```
+✅ Geminiが要件定義書を作成しました
+✅ 内容をdocs/requirements.mdに保存します
+✅ 外部仕様書の作成も依頼します
+```
+
+**Phase 2以降での確認**:
+```
+✅ Geminiがレビューを実施しました
+✅ 指摘事項をDeveloperに伝達します
+⚠️ 注意：Geminiは編集を行いません
+```
+
+### 制限違反時の対応
+
+#### 警告メッセージ
+```
+🚨 Gemini役割制限警告
+現在のPhase: Phase 2 (詳細仕様作成)
+制限内容: Geminiによる文書編集は禁止されています
+許可作業: レビュー・評価・指摘の提供のみ
+対応方法: Developer自身が修正を実施してください
+```
+
+#### 修正手順
+1. **Manager**: レビュー結果をDeveloperに伝達
+2. **Developer**: 指摘事項を基に自分で修正
+3. **Manager**: 修正完了後、再度Geminiにレビュー依頼
+4. **繰り返し**: 承認されるまで修正・レビューを繰り返し
 
 ## ペイン間コミュニケーション（Developer）
 

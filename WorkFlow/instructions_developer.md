@@ -25,6 +25,15 @@
 ```
 Manager: 詳細仕様書とテスト手順書の作成指示を受領しました。
 
+【作業前必須チェック】
+作業開始前に使用量チェックを実行します：
+```bash
+if ! ./scripts/check_usage_before_work.sh Developer "詳細仕様書作成"; then
+    echo "🚫 使用量制限のため作業を中断します。復帰可能まで待機が必要です。"
+    exit 1
+fi
+```
+
 【作成する文書】
 - 詳細仕様書（docs/detailed_spec.md）
 - 単体テスト手順書（docs/unit_test_plan.md）
@@ -57,6 +66,15 @@ Manager: Geminiからの指摘事項を受領しました。
 #### 手順3: 作業ブランチ作成とコーディング開始
 ```
 Manager: 詳細仕様書とテスト手順書の承認を受領しました。
+
+【作業前必須チェック】
+コーディング開始前に使用量チェックを実行します：
+```bash
+if ! ./scripts/check_usage_before_work.sh Developer "コーディング開始"; then
+    echo "🚫 使用量制限のため作業を中断します。復帰可能まで待機が必要です。"
+    exit 1
+fi
+```
 
 【作業ブランチ作成】
 mainブランチでの作業は禁止されています。作業ブランチを作成します：
