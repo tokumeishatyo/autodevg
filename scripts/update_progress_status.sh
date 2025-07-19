@@ -15,7 +15,7 @@ MESSAGE="$2"
 WORK_TYPE="${3:-thinking}"
 
 # 共有ディレクトリ設定
-SHARED_DIR="/tmp/autodev_status"
+SHARED_DIR="/tmp/autodevg_status"
 ACTIVE_ROLE_FILE="$SHARED_DIR/active_role.txt"
 PROGRESS_FILE="$SHARED_DIR/progress.txt" 
 WORK_TYPE_FILE="$SHARED_DIR/work_type.txt"

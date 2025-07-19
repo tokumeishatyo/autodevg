@@ -5,24 +5,24 @@ echo "🚀 AutoDev 進捗モニターを新しいターミナルで起動して�
 
 # 使用可能なターミナルエミュレータを検出して起動
 if command -v gnome-terminal >/dev/null 2>&1; then
-    gnome-terminal -- bash -c "/workspace/Demo/scripts/progress_monitor.sh; exec bash"
+    gnome-terminal -- bash -c "/workspace/autodevg/scripts/progress_monitor.sh; exec bash"
 elif command -v xterm >/dev/null 2>&1; then
-    xterm -e "/workspace/Demo/scripts/progress_monitor.sh; exec bash" &
+    xterm -e "/workspace/autodevg/scripts/progress_monitor.sh; exec bash" &
 elif command -v konsole >/dev/null 2>&1; then
-    konsole -e "/workspace/Demo/scripts/progress_monitor.sh; exec bash" &
+    konsole -e "/workspace/autodevg/scripts/progress_monitor.sh; exec bash" &
 elif command -v alacritty >/dev/null 2>&1; then
-    alacritty -e bash -c "/workspace/Demo/scripts/progress_monitor.sh; exec bash" &
+    alacritty -e bash -c "/workspace/autodevg/scripts/progress_monitor.sh; exec bash" &
 else
     echo "⚠️ GUIターミナルエミュレータが見つかりません。"
     echo "🔄 バックグラウンドモードで進捗監視を開始します..."
     
     # バックグラウンドで進捗監視を開始
-    nohup /workspace/Demo/scripts/progress_monitor.sh > /tmp/autodev_status/progress_monitor.log 2>&1 &
-    echo $! > /tmp/autodev_status/progress_monitor.pid
+    nohup /workspace/autodevg/scripts/progress_monitor.sh > /tmp/autodevg_status/progress_monitor.log 2>&1 &
+    echo $! > /tmp/autodevg_status/progress_monitor.pid
     
     echo "✅ 進捗監視がバックグラウンドで開始されました！"
     echo "📊 監視状況を確認するには以下のコマンドを実行："
-    echo "    tail -f /tmp/autodev_status/progress_monitor.log"
+    echo "    tail -f /tmp/autodevg_status/progress_monitor.log"
     echo "    ./scripts/usage_monitor_display.sh"
     echo ""
     return 0

@@ -3,8 +3,8 @@
 # Automatic time analysis from existing logs
 # Usage: ./analyze_logs.sh [output_file]
 
-OUTPUT_FILE="${1:-/workspace/Demo/logs/auto_time_analysis.txt}"
-LOG_DIR="/workspace/Demo/logs"
+OUTPUT_FILE="${1:-/workspace/autodevg/logs/auto_time_analysis.txt}"
+LOG_DIR="/workspace/autodevg/logs"
 
 # Create logs directory if it doesn't exist
 mkdir -p "$LOG_DIR"

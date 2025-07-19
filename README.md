@@ -87,7 +87,7 @@ Webベースのタスク管理アプリケーションを開発したい
 ### 1. ワークスペース起動
 ```bash
 cd /workspace/autodevg
-./setup_claude_workspace.sh
+./setup_autodevg_workspace.sh
 ```
 
 **⏱️ 起動時間について**: 初回起動時は約2分の初期化時間が必要です。この間にtmuxペインの設定、Claude instancesの起動、進捗監視ターミナルの準備が行われます。
@@ -237,8 +237,8 @@ tmux attach-session -t autodevg_workspace
 
 ## ファイル構成
 ```
-/workspace/Demo/
-├── setup_claude_workspace.sh （実行スクリプト）
+/workspace/autodevg/
+├── setup_autodevg_workspace.sh （実行スクリプト）
 ├── README.md （この手順書）
 ├── .claude/
 │   └── settings.local.json （フック設定・ログ機能）
@@ -357,7 +357,7 @@ Claude Code を使用して作成
 #### **Step 1: 通常通り開発**
 ```bash
 # 通常の開発作業を実行（時間記録は自動）
-./setup_claude_workspace.sh
+./setup_autodevg_workspace.sh
 # CEO→Manager→Developer→Reviewerの協働開発
 ```
 
@@ -430,7 +430,7 @@ cat logs/auto_time_analysis.txt
 # autodevgを試して、革新的な自動時間分析を体験！
 git clone https://github.com/tokumeishatyo/autodevg.git
 cd autodevg
-./setup_claude_workspace.sh
+./setup_autodevg_workspace.sh
 
 # 開発完了後
 ./scripts/analyze_logs.sh
@@ -520,7 +520,7 @@ cd autodevg
 ### 🚀 統合監視システムの特徴
 
 #### **1. 予防的自動化**
-- setup_claude_workspace.sh実行で両監視システムが自動開始（初回起動時は約2分の初期化時間が必要）
+- setup_autodevg_workspace.sh実行で両監視システムが自動開始（初回起動時は約2分の初期化時間が必要）
 - 全役割で作業前必須チェック自動実行
 - 使用量85%検知時の自動待機モード移行
 - Manager集中管理による一元的な制限対応
@@ -593,7 +593,7 @@ cd autodevg
 
 ```bash
 # autodevgで統合監視システムを体験！
-./setup_claude_workspace.sh
+./setup_autodevg_workspace.sh
 # → 進捗監視 + 使用量監視が同時起動
 
 # Progress ペイン: リアルタイム進捗表示
@@ -726,7 +726,7 @@ AI協業: 革新的アイデアの創出
 
 ```bash
 # 1. システム起動
-./setup_claude_workspace.sh
+./setup_autodevg_workspace.sh
 
 # 2. /goコマンドで協業開始
 /go

@@ -4,12 +4,12 @@
 # Usage: ./generate_time_report.sh [output_file] [mode]
 # mode: manual (default) or auto
 
-LOG_FILE="/workspace/Demo/logs/time_tracking_log.txt"
-OUTPUT_FILE="${1:-/workspace/Demo/logs/time_report.txt}"
+LOG_FILE="/workspace/autodevg/logs/time_tracking_log.txt"
+OUTPUT_FILE="${1:-/workspace/autodevg/logs/time_report.txt}"
 MODE="${2:-manual}"
 
 # Create logs directory if it doesn't exist
-mkdir -p /workspace/Demo/logs
+mkdir -p /workspace/autodevg/logs
 
 # Check if log file exists
 if [ ! -f "$LOG_FILE" ]; then

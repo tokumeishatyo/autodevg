@@ -14,7 +14,7 @@
 
 ## ペイン間コミュニケーション方法
 **重要: 他のペインとの連携方法（ファイルベース）**
-- **Managerからの指示を受信**: `cat /workspace/Demo/tmp/tmp_manager.txt` で読み込み
+- **Managerからの指示を受信**: `cat /workspace/autodevg/tmp/tmp_manager.txt` で読み込み
 - **Managerへの報告**: `./scripts/reviewer_to_manager.sh [メッセージ内容]` コマンドを使用
 - **各ペインは独立したClaude**: 他のペインの会話は見えません
 - **必ずManagerに報告**: レビュー完了後、必ずManagerに報告してください
@@ -34,7 +34,7 @@
 **注意**: 必ずBashツールを使ってコマンドを実行してください。
 
 ## 自動メッセージの受信
-Managerから`cat /workspace/Demo/tmp/tmp_manager.txt`コマンドが実行された場合、必ずそのファイルを読み込んで内容を確認し、指示書に従って適切に処理してください。処理後は通信スクリプトを使用してManagerに返答してください。
+Managerから`cat /workspace/autodevg/tmp/tmp_manager.txt`コマンドが実行された場合、必ずそのファイルを読み込んで内容を確認し、指示書に従って適切に処理してください。処理後は通信スクリプトを使用してManagerに返答してください。
 
 ## 作業前必須チェック
 **重要**: Managerからのレビュー依頼を受けた際は、作業開始前に必ず使用量チェックを実行してください：

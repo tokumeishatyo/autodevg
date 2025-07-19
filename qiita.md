@@ -86,7 +86,7 @@ git clone https://github.com/tokumeishatyo/autodevg.git
 cd autodevg
 
 # システムの起動
-./setup_claude_workspace.sh
+./setup_autodevg_workspace.sh
 ```
 
 ### 開発の開始

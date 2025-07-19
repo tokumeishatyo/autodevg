@@ -52,9 +52,9 @@ Developerが以下のファイルを操作した場合に詳細ログが記録�
 
 ### 全体活動ログ
 ```
-[2024-07-15 14:30:15] Write - /workspace/Demo/docs/requirements.md
+[2024-07-15 14:30:15] Write - /workspace/autodevg/docs/requirements.md
 [2024-07-15 14:32:20] TodoWrite - Action executed
-[2024-07-15 14:35:45] Edit - /workspace/Demo/docs/external_spec.md
+[2024-07-15 14:35:45] Edit - /workspace/autodevg/docs/external_spec.md
 ```
 
 ### Developer作業ログ
@@ -89,7 +89,7 @@ Developerが以下のファイルを操作した場合に詳細ログが記録�
 ### ログファイルの初期化
 ```bash
 # ログファイルを初期化する場合
-rm -f /workspace/Demo/logs/activity_log.txt
-rm -f /workspace/Demo/logs/developer_work_log.txt
-rm -f /workspace/Demo/logs/git_activity_log.txt
+rm -f /workspace/autodevg/logs/activity_log.txt
+rm -f /workspace/autodevg/logs/developer_work_log.txt
+rm -f /workspace/autodevg/logs/git_activity_log.txt
 ```
