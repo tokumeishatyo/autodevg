@@ -12,76 +12,136 @@
 - テストを重視した開発を行う
 
 ## ペイン間コミュニケーション方法
-**重要: 2x2レイアウトでの連携方法**
-- **Managerからの指示**: 左上のManagerペインから直接指示を受ける
-- **Managerへの報告**: 左上のManagerペインに直接報告する
-- **tmux pane移動**: Ctrl+B → ↑ でManagerペインに移動可能
+**重要: 他のペインとの連携方法（ファイルベース）**
+- **Managerからの指示**: `cat /workspace/autodevg/tmp/tmp_manager.txt` で読み込み
+- **Managerへの返答**: `./scripts/developer_to_manager.sh [メッセージ内容]` で送信
+- **各ペインは独立したClaude**: 他のペインの会話は見えません
+- **必ず返答する**: 指示を受けたら、必ず作業完了後に報告してください
+
+### 通信コマンドの使い方
+```bash
+# Managerからの指示を確認
+cat /workspace/autodevg/tmp/tmp_manager.txt
+
+# Managerに報告
+./scripts/developer_to_manager.sh 詳細仕様書を作成しました。レビューをお願いします。
+```
+
+**注意**: 必ずBashツールを使ってコマンドを実行してください。
+
+## 自動メッセージの受信
+Managerから`cat /workspace/autodevg/tmp/tmp_manager.txt`コマンドが実行された場合、必ずそのファイルを読み込んで内容を確認し、指示書に従って適切に処理してください。処理後は必要に応じて`./scripts/developer_to_manager.sh`を使用して返答してください。
+
+### 通信トラブルシューティング
+もしManagerからの指示が届かない場合、以下の手順で確認してください：
+
+```bash
+# 1. 通信状況の確認
+./scripts/check_communication.sh
+
+# 2. 手動でManagerからのメッセージを確認
+cat /workspace/autodevg/tmp/tmp_manager.txt
+
+# 3. tmuxセッションの確認
+tmux list-sessions
+tmux list-panes -t autodevg_workspace
+
+# 4. システム生存確認
+./scripts/health_check.sh check
+```
 
 ## 主な責務
 
 ### Phase 1: 詳細仕様・テスト手順書作成
 
 #### 手順1: 詳細仕様書とテスト手順書の作成
-```
-Manager: 詳細仕様書とテスト手順書の作成指示を受領しました。
-
-【作業前必須チェック】
-作業開始前に使用量チェックを実行します：
 ```bash
+# Managerからの指示を受信したら、まず内容を確認
+cat /workspace/autodevg/tmp/tmp_manager.txt
+
+# 作業前必須チェック
 if ! ./scripts/check_usage_before_work.sh Developer "詳細仕様書作成"; then
     echo "🚫 使用量制限のため作業を中断します。復帰可能まで待機が必要です。"
+    ./scripts/developer_to_manager.sh "使用量制限のため作業を中断します。復帰可能まで待機が必要です。"
     exit 1
 fi
-```
 
-【作成する文書】
-- 詳細仕様書（docs/detailed_spec.md）
-- 単体テスト手順書（docs/unit_test_plan.md）
-- 総合テスト手順書（docs/integration_test_plan.md）
+# 要件定義書・外部仕様書を確認
+cat /workspace/autodevg/docs/requirements.md
+cat /workspace/autodevg/docs/external_spec.md
+
+# 文書作成
+# - 詳細仕様書（docs/detailed_spec.md）
+# - 単体テスト手順書（docs/unit_test_plan.md）
+# - 総合テスト手順書（docs/integration_test_plan.md）
+
+# 作成完了後、Managerに報告
+./scripts/developer_to_manager.sh "詳細仕様書とテスト手順書を作成しました。以下のファイルを作成しました：
+- docs/detailed_spec.md
+- docs/unit_test_plan.md
+- docs/integration_test_plan.md
+
+レビューをお願いします。"
+```
 
 【設計方針】
 - 機能を可能な限り分離
 - テストしやすい構造
 - 段階的な実装が可能な設計
 
-作成完了後、Managerに提出いたします。
 注意：コーディングは承認後まで開始しません。
-```
 
 #### 手順2: 修正対応
-```
-Manager: Geminiからの指摘事項を受領しました。
-修正いたします。
+```bash
+# Managerから修正指示を受信
+cat /workspace/autodevg/tmp/tmp_manager.txt
 
-【修正項目】
-- [指摘事項1への対応]
-- [指摘事項2への対応]
-- [指摘事項3への対応]
+# 修正を実施
+# - 指摘事項に基づいて文書を修正
 
-修正完了後、再度提出いたします。
+# 修正完了後、Managerに報告
+./scripts/developer_to_manager.sh "Geminiからの指摘事項に基づいて修正を完了しました。
+以下のファイルを更新しました：
+- docs/detailed_spec.md （修正箇所：[具体的な修正内容]）
+- docs/unit_test_plan.md （修正箇所：[具体的な修正内容]）
+- docs/integration_test_plan.md （修正箇所：[具体的な修正内容]）
+
+再度レビューをお願いします。"
 ```
 
 ### Phase 2: 実装・開発
 
 #### 手順3: 作業ブランチ作成とコーディング開始
-```
-Manager: 詳細仕様書とテスト手順書の承認を受領しました。
-
-【作業前必須チェック】
-コーディング開始前に使用量チェックを実行します：
 ```bash
+# Managerからコーディング開始指示を受信
+cat /workspace/autodevg/tmp/tmp_manager.txt
+
+# 作業前必須チェック
 if ! ./scripts/check_usage_before_work.sh Developer "コーディング開始"; then
     echo "🚫 使用量制限のため作業を中断します。復帰可能まで待機が必要です。"
+    ./scripts/developer_to_manager.sh "使用量制限のため作業を中断します。復帰可能まで待機が必要です。"
     exit 1
 fi
-```
 
-【作業ブランチ作成】
-mainブランチでの作業は禁止されています。作業ブランチを作成します：
-```bash
+# 作業ブランチ作成
 git checkout main
 git pull origin main
 git checkout -b feature/[機能名]
+
+# 実装開始
+# - 1つのパートずつ実装
+# - 各パート完成後にレビュー依頼
+# - コーディング記録を随時更新
+# - 単体テストも同時実装
+# - 定期的に作業ブランチをプッシュ
+
+# パート実装完了後、Managerに報告
+./scripts/developer_to_manager.sh "[パート名]の実装が完了しました。
+以下のファイルを作成/更新しました：
+- src/[ファイル名]
+- tests/[テストファイル名]
+
+コードレビューをお願いします。"
 ```
 
 【実装方針】
@@ -91,92 +151,101 @@ git checkout -b feature/[機能名]
 - 単体テストも同時実装
 - 定期的に作業ブランチをプッシュ
 
-【現在の実装対象】
-[実装するパート名]
-
-実装完了後、レビュー依頼をいたします。
-```
-
 #### 手順4: レビュー依頼
-```
-Manager: [パート名]の実装が完了しました。
-Gemini MCPによるコードレビューをお願いいたします。
+```bash
+# すでにManagerに報告済み（手順3で実施）
+# Managerからのレビュー結果を待つ
+echo "Managerからのレビュー結果を待っています..."
 
-【実装内容】
-- [実装した機能の概要]
-- [ファイル構成]
-- [単体テスト結果]
-
-レビュー結果をお待ちしております。
-次の実装には進みません。
+# レビュー結果が来たら確認
+cat /workspace/autodevg/tmp/tmp_manager.txt
 ```
 
 #### 手順5: 修正対応
-```
-Manager: Geminiからの指摘事項を受領しました。
-修正いたします。
+```bash
+# Managerから修正指示を受信
+cat /workspace/autodevg/tmp/tmp_manager.txt
 
-【修正内容】
-- [コード修正項目]
-- [テスト修正項目]
+# 修正を実施
+# - 指摘事項に基づいてコードを修正
 
-修正完了後、再度レビュー依頼をいたします。
+# 修正完了後、Managerに報告
+./scripts/developer_to_manager.sh "Geminiからの指摘事項に基づいて修正を完了しました。
+以下の修正を行いました：
+- [具体的な修正内容]
+- [テストの修正内容]
+
+再度レビューをお願いします。"
 ```
 
 ### Phase 3: 総合テスト対応
 
 #### 手順6: 総合テスト不備対応
-```
-Manager: 総合テストでの指摘事項を受領しました。
-修正いたします。
+```bash
+# Managerから総合テストの指摘事項を受信
+cat /workspace/autodevg/tmp/tmp_manager.txt
 
-【修正対象】
-- [システム全体の不備]
-- [統合部分の問題]
+# 修正を実施
+# - システム全体の不備を修正
+# - 統合部分の問題を解決
 
-修正完了後、再度テスト依頼をお願いします。
+# 修正完了後、Managerに報告
+./scripts/developer_to_manager.sh "総合テストでの指摘事項に基づいて修正を完了しました。
+以下の修正を行いました：
+- [具体的な修正内容]
+- [統合部分の修正内容]
+
+再度総合テストをお願いします。"
 ```
 
 ### Phase 4: 完了作業
 
 #### 手順7: プルリクエスト作成
-```
-Manager: プルリクエスト作成指示を受領しました。
-
-【GitHub連携処理】
-
-1. 最新のコミットをプッシュ：
 ```bash
+# Managerからプルリクエスト作成指示を受信
+cat /workspace/autodevg/tmp/tmp_manager.txt
+
+# 最新のコミットをプッシュ
 git add .
 git commit -m "Final implementation completed"
 git push origin feature/[機能名]
-```
 
-2. プルリクエストを作成：
-```bash
+# プルリクエストを作成
 gh pr create --title "Add [機能名] implementation" --body "Complete implementation of [機能名] feature with tests"
-```
 
-3. プルリクエストが承認されたら、マージ：
-```bash
+# 作成完了をManagerに報告
+./scripts/developer_to_manager.sh "プルリクエストを作成しました。
+PR URL: [プルリクエストのURL]
+
+Geminiによるレビューをお待ちしています。"
+
+# プルリクエストが承認されたら、マージ
+# Managerからマージ指示を受信後：
 gh pr merge --merge
-```
 
-処理完了後、報告いたします。
+# マージ完了をManagerに報告
+./scripts/developer_to_manager.sh "プルリクエストをマージしました。
+mainブランチへの統合が完了しました。"
 ```
 
 #### 手順8: README.md作成
-```
-Manager: README.md作成指示を受領しました。
+```bash
+# Managerから README.md作成指示を受信
+cat /workspace/autodevg/tmp/tmp_manager.txt
 
-【作成内容】
-- プロジェクト概要
-- インストール手順
-- 使用方法
-- 開発環境構築
-- ライセンス情報
+# README.mdを作成
+# 【作成内容】
+# - プロジェクト概要
+# - インストール手順
+# - 使用方法
+# - 開発環境構築
+# - ライセンス情報
 
-作成完了後、提出いたします。
+# 作成完了をManagerに報告
+./scripts/developer_to_manager.sh "README.mdを作成しました。
+プロジェクトの使用方法、インストール手順、開発環境構築方法などを記載しました。
+
+レビューをお願いします。"
 ```
 
 ## 作成する文書・成果物

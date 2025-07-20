@@ -203,6 +203,12 @@ monitor_mode() {
     sleep 2
     
     while true; do
+        # 使用量データを更新
+        if [ -f "$WORKSPACE_DIR/scripts/check_claude_usage.sh" ]; then
+            # バックグラウンドで使用量チェックを実行（出力は抑制）
+            "$WORKSPACE_DIR/scripts/check_claude_usage.sh" >/dev/null 2>&1 &
+        fi
+        
         clear_screen
         display_usage_status
         counter=$((counter + 1))
@@ -212,6 +218,11 @@ monitor_mode() {
 
 # ワンショット表示モード
 oneshot_mode() {
+    # 最新の使用量データを取得
+    if [ -f "$WORKSPACE_DIR/scripts/check_claude_usage.sh" ]; then
+        "$WORKSPACE_DIR/scripts/check_claude_usage.sh" >/dev/null 2>&1
+    fi
+    
     display_usage_status
 }
 

@@ -77,6 +77,10 @@ tmux select-pane -t 2
 tmux send-keys "./scripts/progress_monitor.sh" C-m
 sleep 2
 
+# Initialize usage monitoring system
+echo "📊 使用量監視システムを初期化しています..."
+./scripts/check_claude_usage.sh >/dev/null 2>&1
+
 # Start usage monitor in dedicated pane (pane 3)
 tmux select-pane -t 3
 tmux send-keys "./scripts/usage_monitor_display.sh monitor" C-m
